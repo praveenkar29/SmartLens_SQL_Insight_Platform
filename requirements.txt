@@ -12,3 +12,4 @@ SpeechRecognition
 streamlit_folium
 folium
 sounddevice
+langchain_community
