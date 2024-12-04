@@ -1,0 +1,13 @@
+azure-functions
+pyodbc
+openai==0.28.0
+langchain
+#matplotlib
+streamlit
+#seaborn
+plotly
+#base64
+SpeechRecognition
+PyAudio
+streamlit_folium
+folium
