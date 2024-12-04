@@ -422,7 +422,7 @@ def capture_voice_input():
 # Main User Interface for Streamlit
 def main():
     st.set_page_config(page_title="AI SQL Visualizer", page_icon="🤖", layout="wide")
-    uploaded_image_path = "https://raw.githubusercontent.com/praveenkar29/SmartLens_SQL_Insight_Platform/main/AI_Hackathon_4.jpg"
+    uploaded_image_path = "AI_Hackathon_4.jpg"
     image_base64 = get_image_base64(uploaded_image_path)
     if image_base64:
         st.markdown(
