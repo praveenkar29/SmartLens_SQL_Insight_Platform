@@ -560,9 +560,15 @@ def main():
                         [st.session_state.x_axis_col, st.session_state.y_axis_col]
                     ].dropna()
                     chart_data[st.session_state.x_axis_col] = chart_data[st.session_state.x_axis_col].astype(str)
-                    chart_data[st.session_state.y_axis_col] = pd.to_numeric(
-                        chart_data[st.session_state.y_axis_col], errors="coerce"
-                    )
+                    try:
+                        chart_data[st.session_state.y_axis_col] = pd.to_numeric(
+                            chart_data[st.session_state.y_axis_col], errors="coerce"
+                        )
+                    except TypeError as e:
+                        # Custom message when TypeError occurs
+                        st.error(f"Error converting data in the '{st.session_state.y_axis_col}'  "
+                                "Please select the correct column from drop down")
+                        return  # Prevent further execution if error occurs
                     chart_data = chart_data.dropna(subset=[st.session_state.y_axis_col])
 
                     if not chart_data.empty:
