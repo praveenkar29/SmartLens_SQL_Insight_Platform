@@ -171,7 +171,7 @@ def get_sql_query_from_azure_openai(user_input: str, deployment_name: str) -> st
                         "Include a feature that generates natural language summaries or insights based on the retrieved data. For example: Sales increased by 15% last month compared to the previous month and Top-selling product categories are Electronics and Home Appliances. Use tools like GPT or Google PaLM to generate these narratives.\n"
                         "The database contains the following tables:\n"
                         "1. SalesRecords: Columns [SaleID, CstID, PrdtID, SaleDate, Quantity, UnitPrice, TotalAmount, DiscountApplied, TaxAmount, NetAmount, PaymentMethod, SalesRepresentativeID, Region]\n"
-                        "2. Products: Columns [ProductID, ProductName, Category, UntPrice, StockQuantity, SupplierID]\n"
+                        "2. Products: Columns [ProductID, ProductName, Category, UnitPrice, StockQuantity, SupplierID]\n"
                         "3. Customers: Columns [CustomerID, CustomerName, Email, Phone, Address, RegisteredDate]\n\n"
                         "Generate MSSQL-compatible queries based on the user's input. "
                         "Do not include explanations or code block syntax."
