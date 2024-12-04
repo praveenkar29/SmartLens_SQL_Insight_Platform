@@ -11,5 +11,4 @@ SpeechRecognition
 PyAudio
 streamlit_folium
 folium
-pyaudio==0.2.11
 sounddevice
