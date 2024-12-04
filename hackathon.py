@@ -371,7 +371,7 @@ def analyze_and_generate_suggestions(data, deployment_name="openai-demo"):
     prompt = (
         f"Based on the following dataset summary:\n{summary}\n\n"
         "Provide actionable business insights focusing on marketing strategies, operational improvements, and "
-        "opportunities for growth. insights should be relevant to the data trends and it should be brief.Please make it compatible to email body without signature and body"
+        "opportunities for growth. insights should be relevant to the data trends and it should be brief.Please make it compatible to email body without signature and body, please suggest the best suitable chart from Bar Chart, Pie Chart, Scatter Plot, Line Chart"
     )
 
     try:
