@@ -177,7 +177,7 @@ def get_sql_query_from_azure_openai(user_input: str, deployment_name: str) -> st
                         "Do not include explanations or code block syntax."
                         "always generate same query for the user_input until it changed"
                         "Do not perform insert , update , delete and drop operation on columns and tables"
-                       # "Mask the  Customers columns: Email, Phone"
+                        "When displaying data from the 'Customers' table, mask Personally Identifiable Information (PII) in the 'Email' and 'Phone' columns using the following rules: 1. For Email: Replace characters before the `@` symbol with `*`, keeping the first character and the domain part. For example, `john.smith@example.com` becomes `j***@example.com`. 2. For Phone: Replace the middle characters with `*`, keeping the first 4 and last 2 characters. For example, `123-456-7890` becomes `123-****-90`.Ensure the query applies these transformations using MSSQL functions such as `LEFT`, `RIGHT`, `CHARINDEX`, `REPLICATE`, and `SUBSTRING`."
                     ),
                 },
                 {
