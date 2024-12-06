@@ -3,6 +3,7 @@ import pyodbc
 import decimal  # Add this line
 import openai
 import json
+import PyAudio
 from decimal import Decimal
 from datetime import datetime
 from langchain.llms import OpenAI
