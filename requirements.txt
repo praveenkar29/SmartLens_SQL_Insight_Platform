@@ -12,6 +12,6 @@ SpeechRecognition
 streamlit_folium
 folium
 sounddevice
-streamlit-voice
+#streamlit-voice
 langchain_community
 #PortAudio
