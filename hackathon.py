@@ -423,7 +423,48 @@ def capture_voice_input():
         except Exception as e:
             st.error(f"An unexpected error occurred: {e}")
     return ""
+
+def compare_tables(table1, table2):
+    query1 = f"SELECT * FROM {table1}"
+    query2 = f"SELECT * FROM {table2}"
  
+    try:
+        df1 = execute_query_on_mssql(query1)
+        df2 = execute_query_on_mssql(query2)
+ 
+        # Ensure CustomerID column exists in both dataframes
+        if 'CustomerID' not in df1.columns or 'CustomerID' not in df2.columns:
+            return pd.DataFrame({"Error": ["CustomerID column not found in one or both tables."]})
+ 
+        # Set CustomerID as index for both dataframes
+        df1.set_index('CustomerID', inplace=True)
+        df2.set_index('CustomerID', inplace=True)
+ 
+        # Find all unique CustomerIDs
+        all_customers = df1.index.union(df2.index)
+ 
+        # Initialize the comparison result DataFrame
+        comparison_result = pd.DataFrame(index=all_customers)
+ 
+        # Compare data for all customers, including CustomerName
+        columns_to_compare = ['CustomerName', 'Email', 'Phone', 'Address', 'RegisteredDate']
+        for column in columns_to_compare:
+            if column in df1.columns:
+                comparison_result[f'{column}_{table1}'] = df1[column]
+            if column in df2.columns:
+                comparison_result[f'{column}_{table2}'] = df2[column]
+            if column in df1.columns and column in df2.columns:
+                comparison_result[f'{column}_diff'] = comparison_result[f'{column}_{table1}'] != comparison_result[f'{column}_{table2}']
+ 
+        # Add a status column
+        comparison_result['Status'] = 'In Both'
+        comparison_result.loc[comparison_result.index.difference(df2.index), 'Status'] = f'Only in {table1}'
+        comparison_result.loc[comparison_result.index.difference(df1.index), 'Status'] = f'Only in {table2}'
+ 
+        return comparison_result
+ 
+    except Exception as e:
+        return pd.DataFrame({"Error": [f"Error comparing tables: {str(e)}"]})
 # Main User Interface for Streamlit
 def main():
     st.set_page_config(page_title="AI SQL Visualizer", page_icon="🤖", layout="wide")
@@ -459,7 +500,7 @@ def main():
     # Sidebar navigation
     st.sidebar.title("Navigation")
     st.sidebar.markdown("Select a section:")
-    nav_options = ["Introduction", "SQL Query Executor",  "Contact Us"]
+    nav_options = ["Introduction", "SQL Query Executor", "Table Comparison", "Contact Us"]
     selected_nav = st.sidebar.radio("", nav_options)
 
     if selected_nav == "Introduction":
@@ -684,6 +725,36 @@ def main():
     elif selected_nav == "Live Leaderboard":
         st.title("Live Leaderboard")
         st.info("Leaderboard will update in real-time during the hackathon.")
+    elif selected_nav == "Table Comparison":
+        st.subheader("Table Comparison")
+        col1, col2 = st.columns(2)
+        with col1:
+            table1 = st.text_input("Enter name of first table:", key="table1_input")
+        with col2:
+            table2 = st.text_input("Enter name of second table:", key="table2_input")
+
+        if st.button("Compare Tables"):
+            if table1 and table2:
+                comparison_result = compare_tables(table1, table2)
+ 
+ 
+               
+                if 'Error' not in comparison_result.columns:
+                    st.subheader("Comparison Results")
+                   
+                    # Convert boolean values to checkboxes
+                    for col in comparison_result.columns:
+                        if col.endswith('_diff'):
+                            comparison_result[col] = comparison_result[col].map({True: '☑', False: '☐'})
+                   
+                    st.dataframe(comparison_result)
+                   
+                   
+                else:
+                    st.error(comparison_result['Error'][0])
+            else:
+                st.warning("Please enter both table names for comparison.")
+ 
 
     elif selected_nav == "Contact Us":
         st.title("Contact Us")
