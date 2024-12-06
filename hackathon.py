@@ -3,8 +3,6 @@ import pyodbc
 import decimal  # Add this line
 import openai
 import json
-import sounddevice as sd
-import numpy as np
 #import PyAudio
 from decimal import Decimal
 from datetime import datetime
@@ -309,19 +307,21 @@ def analyze_and_plot_data(data):
  
 # Speech Recognition for Voice Input
 def get_voice_input():
-    """Capture voice input from the user using sounddevice."""
+    """Capture voice input from the user."""
     recognizer = sr.Recognizer()
-    with sr.Microphone() as source:
-        st.info("Listening for your query...")
-        try:
+    microphone = sr.Microphone()
+ 
+    try:
+        with microphone as source:
+            st.info("Listening for your query...")
             audio = recognizer.listen(source)
             query = recognizer.recognize_google(audio)
             st.success(f"Voice Input: {query}")
             return query
-        except sr.UnknownValueError:
-            st.error("Sorry, I couldn't understand the audio.")
-        except sr.RequestError:
-            st.error("Sorry, the speech recognition service is unavailable.")
+    except sr.UnknownValueError:
+        st.error("Sorry, I couldn't understand the audio.")
+    except sr.RequestError:
+        st.error("Sorry, the speech recognition service is unavailable.")
     return None
  
 def analyze_and_generate_suggestions(data, deployment_name="openai-demo"):
@@ -415,7 +415,6 @@ def capture_voice_input():
             audio = recognizer.listen(source, timeout=15, phrase_time_limit=15)
             st.info("Processing your voice input...")
             voice_input = recognizer.recognize_google(audio)
-            st.success(f"Captured voice input: {voice_input}")
             return voice_input
         except sr.UnknownValueError:
             st.error("Sorry, I couldn't understand your voice. Please try again.")
