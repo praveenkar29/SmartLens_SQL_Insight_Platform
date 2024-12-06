@@ -3,6 +3,8 @@ import pyodbc
 import decimal  # Add this line
 import openai
 import json
+import sounddevice as sd
+import numpy as np
 #import PyAudio
 from decimal import Decimal
 from datetime import datetime
@@ -307,21 +309,19 @@ def analyze_and_plot_data(data):
  
 # Speech Recognition for Voice Input
 def get_voice_input():
-    """Capture voice input from the user."""
+    """Capture voice input from the user using sounddevice."""
     recognizer = sr.Recognizer()
-    microphone = sr.Microphone()
- 
-    try:
-        with microphone as source:
-            st.info("Listening for your query...")
+    with sr.Microphone() as source:
+        st.info("Listening for your query...")
+        try:
             audio = recognizer.listen(source)
             query = recognizer.recognize_google(audio)
             st.success(f"Voice Input: {query}")
             return query
-    except sr.UnknownValueError:
-        st.error("Sorry, I couldn't understand the audio.")
-    except sr.RequestError:
-        st.error("Sorry, the speech recognition service is unavailable.")
+        except sr.UnknownValueError:
+            st.error("Sorry, I couldn't understand the audio.")
+        except sr.RequestError:
+            st.error("Sorry, the speech recognition service is unavailable.")
     return None
  
 def analyze_and_generate_suggestions(data, deployment_name="openai-demo"):
@@ -409,6 +409,7 @@ def display_base64_image(image_base64):
 def capture_voice_input():
     """Capture voice input and return as text."""
     recognizer = sr.Recognizer()
+
     with sr.Microphone() as source:
         st.info("Listening... Speak now!")
         try:
