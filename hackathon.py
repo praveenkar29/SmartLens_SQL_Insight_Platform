@@ -409,13 +409,13 @@ def display_base64_image(image_base64):
 def capture_voice_input():
     """Capture voice input and return as text."""
     recognizer = sr.Recognizer()
-
     with sr.Microphone() as source:
         st.info("Listening... Speak now!")
         try:
             audio = recognizer.listen(source, timeout=15, phrase_time_limit=15)
             st.info("Processing your voice input...")
             voice_input = recognizer.recognize_google(audio)
+            st.success(f"Captured voice input: {voice_input}")
             return voice_input
         except sr.UnknownValueError:
             st.error("Sorry, I couldn't understand your voice. Please try again.")
