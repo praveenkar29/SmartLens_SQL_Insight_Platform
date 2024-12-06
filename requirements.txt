@@ -14,3 +14,4 @@ folium
 sounddevice
 streamlit-voice
 langchain_community
+PortAudio
