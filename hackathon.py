@@ -3,6 +3,8 @@ import pyodbc
 import decimal  # Add this line
 import openai
 import json
+import os
+from dotenv import load_dotenv
 #import PyAudio
 from decimal import Decimal
 from datetime import datetime
@@ -18,16 +20,17 @@ import speech_recognition as sr  # For voice input
 import requests
 import logging
 from io import StringIO
-import folium 
+import folium
 from streamlit_folium import st_folium
  
 logging.basicConfig(level=logging.INFO)
- 
+
+load_dotenv()
 # Azure OpenAI Configuration
-openai.api_type = "azure"
-openai.api_key = "cfe7825c59344377b398ed9ec2b984eb"
-openai.api_base = "https://mt-openaipractice.openai.azure.com/"
-openai.api_version = "2024-02-15-preview"
+openai.api_type =os.getenv("API_TYPE")
+openai.api_key =os.getenv("API_KEY")
+openai.api_base =os.getenv("API_BASE")
+openai.api_version =os.getenv("API_VERSION")
  
  
  
@@ -70,9 +73,9 @@ def send_email_alert_with_summary(summary):
         """
        
         response = requests.post(
-            "https://prod-29.centralindia.logic.azure.com:443/workflows/4355a94b62bc4b35ae540c1dea1aa7f1/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=UpLHLBHhdxNtO-pYvtfxsyrkpWBN71gZvSKSgWnpfCo",
+            f"https://{os.getenv('AZURE_HOST')}/workflows/{os.getenv('AZURE_ORGID')}/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig={os.getenv('AZURE_SIGN')}",
             json={
-                "to": "venkatama.in@mouritech.com,saisanthoshj.in@mouritech.com,praveenkar.in@mouritech.com,swapnaa.in@mouritech.com",  # Change this to the recipient's email
+                "to": os.getenv("EMAIL_RECIPIENT"),  # Change this to the recipient's email
                 "subject": "Data Analysis Summary and Insights",
                 "message": email_content,
                 "body" : email_content,
@@ -255,11 +258,11 @@ def execute_query_on_mssql(sql_query: str):
     """Execute an SQL query on MSSQL and return a DataFrame."""
     try:
         with pyodbc.connect(
-            "DRIVER={ODBC Driver 17 for SQL Server};"
-            "SERVER=db-sipef.database.windows.net;"
-            "DATABASE=UNRWA;"
-            "UID=dev1;"
-            "PWD=Developer@1;"
+            f"DRIVER={{{os.getenv('DB_DRIVER')}}};"
+            f"SERVER={os.getenv('DB_SERVER')};"
+            f"DATABASE={os.getenv('DB_NAME')};"
+            f"UID={os.getenv('DB_USER')};"
+            f"PWD={os.getenv('DB_PASSWORD')};"
         ) as conn:
             with conn.cursor() as cursor:
                 cursor.execute(sql_query)
